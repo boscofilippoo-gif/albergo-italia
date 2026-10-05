@@ -1,0 +1,42 @@
+---
+import { hotel, nav } from '../data/hotel';
+const year = new Date().getFullYear();
+---
+
+<footer id="contatti" class="relative overflow-clip bg-ink pt-24 text-paper">
+  <div class="mx-auto grid max-w-[1600px] gap-12 px-5 md:grid-cols-12 md:px-10">
+    <div class="md:col-span-4">
+      <p class="eyebrow text-oro-light">Albergo Italia ★★★</p>
+      <p class="mt-4 text-sm leading-relaxed text-paper/70">
+        {hotel.address}<br />{hotel.cap} {hotel.city} ({hotel.province}), Italia
+      </p>
+      <a href={hotel.phoneHref} class="display link-line mt-6 inline-block text-3xl">{hotel.phone}</a>
+    </div>
+    <nav class="md:col-span-3" aria-label="Footer">
+      <p class="eyebrow text-oro-light">Il sito</p>
+      <ul class="mt-4 grid gap-2 text-sm text-paper/70">
+        <li><a href="/" class="link-line">Home</a></li>
+        {nav.map((l) => <li><a href={l.href} class="link-line">{l.label}</a></li>)}
+      </ul>
+    </nav>
+    <div class="md:col-span-3">
+      <p class="eyebrow text-oro-light">Orari</p>
+      <p class="mt-4 text-sm leading-relaxed text-paper/70">
+        Check-in {hotel.checkIn}<br />Check-out {hotel.checkOut}
+      </p>
+    </div>
+    <div class="md:col-span-2">
+      <a href="#page-top" class="eyebrow link-line text-paper/70">Torna su ↑</a>
+    </div>
+  </div>
+
+  <p class="footer-word display pointer-events-none mt-20 select-none whitespace-nowrap pb-[0.22em] text-center text-[17.5vw] !leading-[0.9] text-paper/[0.92]" aria-hidden="true">
+    Albergo <em class="text-oro-light">Italia</em>
+  </p>
+
+  <div class="mx-auto flex max-w-[1600px] flex-wrap justify-between gap-4 border-t border-paper/10 px-5 py-6 text-[0.7rem] tracking-wide text-paper/45 md:px-10">
+    <p>© {year} Albergo Italia · Varallo</p>
+    <p>CIN {hotel.cin} · CIR {hotel.cir}</p>
+    <p><a href="#" class="link-line">Privacy</a> · <a href="#" class="link-line">Cookie</a></p>
+  </div>
+</footer>

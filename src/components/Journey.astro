@@ -1,0 +1,119 @@
+---
+import { Image } from 'astro:assets';
+import ingresso from '../assets/img/ingresso-neve.jpg';
+import reception from '../assets/img/reception.jpg';
+import corridoio from '../assets/img/corridoio.jpg';
+import cameraBalcone from '../assets/img/camera-balcone.jpg';
+import vistaBalcone from '../assets/img/vista-balcone.jpg';
+
+const steps = [
+  {
+    title: 'Il portone',
+    text: 'Sotto l’insegna, il portone in legno su Corso Roma. In estate i gerani, in inverno la neve: siete arrivati.',
+    img: ingresso,
+    alt: 'L’ingresso dell’albergo sotto la neve, con il portone in legno e le insegne Albergo e Ristorante',
+  },
+  {
+    title: 'L’accoglienza',
+    text: 'L’arco, le chiavi appese al banco, una luce calda. Il personale è ciò che i nostri ospiti ricordano di più.',
+    img: reception,
+    alt: 'La reception con il bancone in legno, la casellara delle chiavi e l’arco d’ingresso',
+  },
+  {
+    title: 'Le volte',
+    text: 'I corridoi dell’antico convento vi accompagnano, in silenzio, fino alla camera.',
+    img: corridoio,
+    alt: 'Corridoio con soffitto a volte, porte in legno e quadri alle pareti',
+  },
+  {
+    title: 'La camera',
+    text: 'Aprite le persiane: sotto c’è il corso, i balconi fioriti, i tigli che cambiano colore con le stagioni.',
+    img: cameraBalcone,
+    alt: 'Camera matrimoniale con portafinestra aperta sul balcone e un albero giallo d’autunno',
+  },
+  {
+    title: 'Il mattino',
+    text: 'Caffè, torte fatte in casa, e Varallo da scoprire a piedi. Il Sacro Monte è a pochi minuti.',
+    img: vistaBalcone,
+    alt: 'Vista dal balcone su Corso Roma con i tigli gialli e le montagne sullo sfondo',
+  },
+];
+---
+
+<section class="journey relative bg-notte text-paper" aria-label="Un passo alla volta dentro l’albergo">
+  <div class="mx-auto max-w-[1600px] px-5 pb-16 pt-28 md:px-10 md:pt-40">
+    <p class="eyebrow mb-8 flex items-center gap-4 text-oro-light" data-reveal>
+      <span class="h-px w-10 bg-current"></span> Un passo alla volta
+    </p>
+    <h2 class="display text-[clamp(3.4rem,10vw,10rem)]" data-split>Entriamo <em class="text-oro-light">insieme.</em></h2>
+  </div>
+
+  <div class="journey-pin relative h-svh overflow-clip">
+    <div class="grid h-full grid-rows-[58%_42%] md:grid-cols-[1fr_1fr] md:grid-rows-1">
+      <!-- Testi -->
+      <div class="relative order-2 flex flex-col px-5 pb-8 pt-6 md:order-1 md:justify-between md:px-10 md:py-16">
+        <div class="hidden items-center gap-4 md:flex">
+          <span class="eyebrow text-oro-light"><span class="journey-count">01</span> / 0{steps.length}</span>
+          <span class="flex gap-2">
+            {steps.map(() => (
+              <span class="journey-dot relative block h-px w-10 overflow-hidden bg-paper/20">
+                <span class="absolute inset-0 origin-left scale-x-0 bg-oro-light" />
+              </span>
+            ))}
+          </span>
+        </div>
+
+        <div class="relative flex-1 md:flex-none md:min-h-[22rem]">
+          {steps.map((s, i) => (
+            <article class="journey-text absolute inset-x-0 top-0 md:bottom-0 md:top-auto" data-index={i} style={i === 0 ? '' : 'opacity:0'}>
+              <p class="eyebrow mb-3 text-oro-light md:hidden">0{i + 1} / 0{steps.length}</p>
+              <h3 class="display text-[clamp(2.8rem,7vw,7.5rem)]">{s.title}</h3>
+              <p class="mt-4 max-w-md text-[0.98rem] leading-relaxed text-paper/75 md:mt-8 md:text-[1.1rem]">{s.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <!-- Immagini -->
+      <div class="relative order-1 overflow-clip md:order-2">
+        {steps.map((s, i) => (
+          <div class="journey-img absolute inset-0 overflow-clip" style={i === 0 ? '' : 'clip-path: inset(100% 0 0 0)'}>
+            <Image
+              src={s.img}
+              alt={s.alt}
+              widths={[600, 900, 1280]}
+              sizes="(min-width: 768px) 50vw, 100vw"
+              class="h-full w-full scale-110 object-cover"
+              loading="lazy"
+            />
+          </div>
+        ))}
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-notte/50 to-transparent md:bg-gradient-to-r md:from-notte/40"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Senza animazioni: tutto in colonna, leggibile */
+  @media (prefers-reduced-motion: reduce) {
+    .journey-pin {
+      height: auto;
+    }
+    .journey-pin > div {
+      display: block;
+    }
+    .journey-text,
+    .journey-img {
+      position: relative !important;
+      opacity: 1 !important;
+      clip-path: none !important;
+    }
+    .journey-img {
+      aspect-ratio: 4/3;
+    }
+    .journey-img img {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,53 @@
+---
+import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
+
+interface Props {
+  kicker: string;
+  title: string;
+  titleItalic?: string;
+  intro: string;
+  image: ImageMetadata;
+  alt: string;
+  position?: string;
+}
+
+const { kicker, title, titleItalic, intro, image, alt, position = '50% 50%' } = Astro.props;
+const width = Math.min(image.width, 1920);
+const avif = await getImage({ src: image, width, format: 'avif', quality: 68 });
+const jpg = await getImage({ src: image, width, format: 'jpg', quality: 78 });
+---
+
+<section id="page-top" class="hero relative h-[88svh] min-h-[600px] overflow-clip bg-notte text-paper">
+  <div class="hero-media absolute inset-0 will-change-transform">
+    <picture>
+      <source srcset={avif.src} type="image/avif" />
+      <img
+        src={jpg.src}
+        alt={alt}
+        width={jpg.attributes.width}
+        height={jpg.attributes.height}
+        class="hero-img h-full w-full object-cover"
+        style={`object-position:${position}`}
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
+  </div>
+  <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-notte via-notte/35 to-notte/45"></div>
+  <div class="hero-veil pointer-events-none absolute inset-0 bg-notte opacity-0"></div>
+
+  <div class="relative mx-auto flex h-full max-w-[1600px] flex-col justify-end px-5 pb-12 md:px-10 md:pb-16">
+    <p class="hero-kicker eyebrow mb-6 flex items-center gap-4 text-oro-light">
+      <span class="h-px w-10 bg-current"></span>
+      {kicker}
+    </p>
+    <div class="grid items-end gap-8 lg:grid-cols-[1.6fr_1fr]">
+      <h1 class="hero-title display text-[clamp(3.6rem,11vw,11rem)]">
+        <span class="split-line block"><span class="hero-word block">{title}</span></span>
+        {titleItalic && <span class="split-line block"><span class="hero-word block italic text-oro-light">{titleItalic}</span></span>}
+      </h1>
+      <p class="hero-side max-w-md pb-3 text-[1.05rem] leading-relaxed text-paper/85">{intro}</p>
+    </div>
+  </div>
+</section>

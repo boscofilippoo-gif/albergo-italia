@@ -1,0 +1,168 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource/instrument-serif/400.css";
+@import "@fontsource/instrument-serif/400-italic.css";
+
+@theme {
+  /* Palette: intonaco chiaro, pietra, un solo accento preso dalle cornici rosa della facciata */
+  --color-paper: #f5f3ef;
+  --color-paper-2: #eae6df;
+  --color-ink: #1a1917;
+  --color-ink-soft: #67625b;
+  --color-rosa: #a86553;
+  --color-oro: #8b8378;
+  --color-oro-light: #d8cdbf;
+  --color-notte: #161616;
+  --color-notte-2: #202020;
+  --color-line: rgb(26 25 23 / 0.12);
+
+  --font-display: "Instrument Serif", "Times New Roman", serif;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-paper);
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--color-oro-light);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-oro);
+    outline-offset: 3px;
+  }
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@layer components {
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.015em;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.95rem 1.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition:
+      background-color 0.5s var(--ease-out-expo),
+      color 0.5s var(--ease-out-expo),
+      border-color 0.5s var(--ease-out-expo);
+  }
+  .btn-dark {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .btn-dark:hover {
+    background: var(--color-rosa);
+  }
+  .btn-light {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+  .btn-light:hover {
+    background: var(--color-oro-light);
+  }
+  .btn-ghost {
+    border: 1px solid rgb(244 238 228 / 0.55);
+    color: var(--color-paper);
+  }
+  .btn-ghost:hover {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+  .link-line {
+    background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0% 1px;
+    transition: background-size 0.6s var(--ease-out-expo);
+  }
+  .link-line:hover {
+    background-size: 100% 1px;
+  }
+}
+
+
+/* Testo diviso: le righe sono mascherate */
+.split-line {
+  overflow: clip;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Transizioni tra pagine (progressive enhancement) */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+::view-transition-old(root) {
+  animation: 0.6s cubic-bezier(0.7, 0, 0.84, 0) both vt-out;
+}
+::view-transition-new(root) {
+  animation: 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both vt-in;
+}
+::view-transition-group(site-header) {
+  animation: none;
+}
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: translateY(-3%) scale(0.985);
+  }
+}
+@keyframes vt-in {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Corsivo nei titoli: stesso colore del testo, solo il cambio di stile */
+.display em,
+[data-split] em,
+.manifesto em {
+  color: inherit;
+}

@@ -1,0 +1,120 @@
+---
+import { getImage } from 'astro:assets';
+import facciataSole from '../assets/img/facciata-sole.jpg';
+import facciataFiori from '../assets/img/facciata-fiori.jpg';
+
+const desk = await getImage({ src: facciataSole, width: 1200, format: 'avif', quality: 70 });
+const deskWebp = await getImage({ src: facciataSole, width: 1200, format: 'webp', quality: 75 });
+const mob = await getImage({ src: facciataFiori, width: 740, format: 'avif', quality: 70 });
+const mobWebp = await getImage({ src: facciataFiori, width: 740, format: 'webp', quality: 75 });
+const fallback = await getImage({ src: facciataSole, width: 1200, format: 'jpg', quality: 80 });
+---
+
+<section id="page-top" class="hero relative h-svh min-h-[640px] overflow-clip bg-notte text-paper">
+  <div class="hero-media absolute inset-0 will-change-transform">
+    <picture>
+      <source media="(max-width: 767px)" srcset={mob.src} type="image/avif" />
+      <source media="(max-width: 767px)" srcset={mobWebp.src} type="image/webp" />
+      <source srcset={desk.src} type="image/avif" />
+      <source srcset={deskWebp.src} type="image/webp" />
+      <img
+        src={fallback.src}
+        alt="La facciata dell'Albergo Italia su Corso Roma, con i balconi fioriti e l'insegna storica"
+        class="hero-img h-full w-full object-cover object-[50%_35%]"
+        width="1200"
+        height="803"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
+  </div>
+  <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-notte via-notte/30 to-notte/40"></div>
+  <div class="hero-veil pointer-events-none absolute inset-0 bg-notte opacity-0"></div>
+
+  <div class="relative mx-auto flex h-full max-w-[1600px] flex-col justify-end px-5 pb-8 md:px-10 md:pb-10">
+    <p class="hero-kicker eyebrow mb-6 flex items-center gap-4 text-oro-light">
+      <span class="h-px w-10 bg-current"></span> Hotel storico · Varallo, Valsesia
+    </p>
+
+    <div class="grid items-end gap-10 lg:grid-cols-[1.5fr_1fr]">
+      <h1 class="hero-title display text-[clamp(4.6rem,15vw,15rem)]" aria-label="Albergo Italia">
+        <span class="split-line block"><span class="hero-word block">Albergo</span></span>
+        <span class="split-line block pl-[0.6em]"><span class="hero-word block italic text-oro-light">Italia</span></span>
+      </h1>
+
+      <div class="hero-side max-w-md pb-3">
+        <p class="text-[1.05rem] leading-relaxed text-paper/85">
+          Un antico convento nel cuore di Varallo, ai piedi del Sacro Monte. Da quasi due secoli, la casa di chi arriva
+          in valle.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/contatti#prenota" class="btn btn-light">Verifica disponibilità</a>
+          <a href="#benvenuti" class="btn btn-ghost">Entra</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-bar mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-paper/20 pt-5 text-[0.78rem] tracking-wide text-paper/75">
+      <p id="live-varallo" class="flex items-center gap-3">
+        <span class="relative flex h-2 w-2">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-oro-light opacity-60"></span>
+          <span class="relative inline-flex h-2 w-2 rounded-full bg-oro-light"></span>
+        </span>
+        <span>A Varallo ora</span>
+        <span data-time>--:--</span>
+        <span data-weather class="hidden sm:inline"></span>
+      </p>
+      <p class="hidden md:block">★ 4,4 su Google · 762 recensioni</p>
+      <p class="flex items-center gap-3">
+        Scorri per entrare
+        <span class="scroll-cue relative block h-8 w-px overflow-hidden bg-paper/25">
+          <span class="absolute inset-x-0 top-0 h-1/2 bg-paper"></span>
+        </span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .scroll-cue > span {
+    animation: cue 2.2s var(--ease-out-expo) infinite;
+  }
+  @keyframes cue {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(200%);
+    }
+  }
+</style>
+
+<script>
+  import { hotel } from '../data/hotel';
+
+  const box = document.getElementById('live-varallo');
+  if (box) {
+    const timeEl = box.querySelector<HTMLElement>('[data-time]')!;
+    const fmt = new Intl.DateTimeFormat('it-IT', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Rome' });
+    const tick = () => (timeEl.textContent = fmt.format(new Date()));
+    tick();
+    setInterval(tick, 15_000);
+
+    // Meteo reale di Varallo (Open-Meteo, nessuna chiave). Se fallisce resta solo l'ora.
+    const codes: Record<number, string> = {
+      0: 'sereno', 1: 'poco nuvoloso', 2: 'parzialmente nuvoloso', 3: 'nuvoloso',
+      45: 'nebbia', 48: 'nebbia', 51: 'pioviggine', 53: 'pioviggine', 55: 'pioviggine',
+      61: 'pioggia', 63: 'pioggia', 65: 'pioggia forte', 71: 'neve', 73: 'neve', 75: 'neve',
+      80: 'rovesci', 81: 'rovesci', 82: 'rovesci', 95: 'temporale',
+    };
+    const { lat, lon } = hotel.coords;
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=Europe%2FRome`)
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d) => {
+        const t = Math.round(d.current.temperature_2m);
+        const w = codes[d.current.weather_code] ?? '';
+        box.querySelector('[data-weather]')!.textContent = `· ${t}°C${w ? ', ' + w : ''}`;
+      })
+      .catch(() => {});
+  }
+</script>

@@ -1,0 +1,48 @@
+---
+import { ratings } from '../data/hotel';
+
+// Temi ricorrenti nelle recensioni pubbliche (Google, Booking.com, Tripadvisor).
+// TODO: sostituire/integrare con recensioni scelte insieme alla struttura.
+const rowA = ['Pulizia impeccabile', 'Personale gentilissimo', 'Torte fatte in casa', 'In pieno centro', 'Edificio storico'];
+const rowB = ['Vista sul Sacro Monte', 'Parcheggio riservato', 'Amici a quattro zampe benvenuti', 'Ottimo rapporto qualità-prezzo', 'Torneremo'];
+---
+
+<section class="ospiti relative overflow-clip bg-notte py-32 text-paper md:py-44" aria-labelledby="ospiti-title">
+  <div class="mx-auto max-w-[1600px] px-5 md:px-10">
+    <p class="eyebrow mb-8 flex items-center gap-4 text-oro-light" data-reveal>
+      <span class="h-px w-10 bg-current"></span> Dicono di noi
+    </p>
+    <blockquote class="max-w-5xl">
+      <p id="ospiti-title" class="display text-[clamp(3rem,8vw,8.5rem)]" data-split>
+        «Camere lustre <em class="text-oro-light">come specchi.»</em>
+      </p>
+      <footer class="eyebrow mt-8 text-paper/60" data-reveal>Sam, ospite dal Regno Unito · Booking.com</footer>
+    </blockquote>
+
+    <div class="mt-24 grid grid-cols-2 gap-x-6 gap-y-14 border-t border-paper/15 pt-14 md:mt-32 md:grid-cols-4">
+      {ratings.map((r) => (
+        <div data-reveal>
+          <p class="display text-[clamp(4rem,8vw,7.5rem)] text-oro-light">
+            <span data-count={r.value} data-decimals="1">{r.value.toLocaleString('it-IT', { minimumFractionDigits: 1 })}</span>
+            <span class="text-[0.35em] text-paper/40">/{r.max}</span>
+          </p>
+          <p class="mt-2 text-sm text-paper/80">{r.label}</p>
+          <p class="eyebrow mt-1 !text-[0.6rem] text-paper/40">{r.source}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="mt-28 flex flex-col gap-6 md:mt-36" aria-hidden="true">
+    {[rowA, rowB].map((row, i) => (
+      <div class="marquee flex w-max" data-direction={i === 0 ? '-1' : '1'}>
+        {[...row, ...row, ...row].map((t) => (
+          <span class="display flex shrink-0 items-center gap-10 pr-10 text-[clamp(2.2rem,4.5vw,4.4rem)] italic text-paper/85">
+            {t}
+            <svg viewBox="0 0 24 24" class="h-5 w-5 text-oro-light" fill="currentColor"><path d="M12 2l2.6 7.2H22l-6 4.5 2.3 7.3L12 16.6 5.7 21l2.3-7.3-6-4.5h7.4z" /></svg>
+          </span>
+        ))}
+      </div>
+    ))}
+  </div>
+</section>

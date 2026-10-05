@@ -1,0 +1,94 @@
+---
+import '../styles/global.css';
+import Intro from '../components/Intro.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { hotel } from '../data/hotel';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Mostra la barra prenotazione fissa su mobile */
+  mobileBar?: boolean;
+}
+
+const {
+  title = 'Albergo Italia · Hotel storico nel centro di Varallo',
+  description = 'Albergo storico a 3 stelle in un ex convento nel cuore di Varallo, ai piedi del Sacro Monte. Camere con vista sul corso, colazione con torte fatte in casa, parcheggio riservato.',
+  mobileBar = true,
+} = Astro.props;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Hotel',
+  name: hotel.name,
+  starRating: { '@type': 'Rating', ratingValue: hotel.stars },
+  telephone: '+39 0163 51106',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: hotel.address,
+    postalCode: hotel.cap,
+    addressLocality: hotel.city,
+    addressRegion: hotel.province,
+    addressCountry: 'IT',
+  },
+  checkinTime: '14:00',
+  checkoutTime: '10:00',
+  petsAllowed: true,
+  amenityFeature: ['Wi-Fi gratuito', 'Colazione inclusa', 'Parcheggio', 'Giardino', 'Bar', 'Ristorante'].map((name) => ({
+    '@type': 'LocationFeatureSpecification',
+    name,
+    value: true,
+  })),
+};
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f4eee4" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="it_IT" />
+    <!-- La transizione tra pagine parte solo quando l'apertura della pagina è pronta -->
+    <link rel="expect" href="#page-top" blocking="render" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      // L'apertura parte a ogni arrivo sul sito; si salta solo navigando tra le pagine interne
+      try {
+        const nav = performance.getEntriesByType('navigation')[0];
+        const reload = nav && nav.type === 'reload';
+        if (!reload && document.referrer && new URL(document.referrer).origin === location.origin) document.documentElement.classList.add('intro-seen');
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <Intro />
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+
+    {
+      mobileBar && (
+        <div id="mobile-bar" class="fixed inset-x-3 bottom-3 z-40 flex translate-y-[150%] gap-2 transition-transform duration-700 ease-[var(--ease-out-expo)] sm:hidden">
+          <a href={hotel.phoneHref} class="btn flex-1 justify-center bg-paper text-ink shadow-lg">Chiama</a>
+          <a href="/contatti#prenota" class="btn btn-dark flex-[2] justify-center shadow-lg">Disponibilità</a>
+        </div>
+      )
+    }
+
+    <script>
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>

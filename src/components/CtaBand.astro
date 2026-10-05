@@ -1,0 +1,25 @@
+---
+import { hotel } from '../data/hotel';
+
+interface Props {
+  title?: string;
+  titleItalic?: string;
+}
+const { title = 'Vi aspettiamo', titleItalic = 'a Varallo.' } = Astro.props;
+---
+
+<section class="relative overflow-clip bg-paper py-32 md:py-44">
+  <div class="mx-auto flex max-w-[1600px] flex-col items-center px-5 text-center md:px-10">
+    <p class="eyebrow mb-10 flex items-center gap-4 text-rosa" data-reveal>
+      <span class="h-px w-10 bg-current"></span> Prenota direttamente <span class="h-px w-10 bg-current"></span>
+    </p>
+    <h2 class="display text-[clamp(3.4rem,9vw,9.5rem)]" data-split>{title} <em class="text-rosa">{titleItalic}</em></h2>
+    <p class="mt-10 max-w-md text-[1.02rem] leading-relaxed text-ink-soft" data-reveal>
+      Scriveteci le date o chiamateci: risponde l’albergo, con la migliore tariffa disponibile.
+    </p>
+    <div class="mt-12 flex flex-wrap items-center justify-center gap-4" data-reveal>
+      <a href="/contatti#prenota" class="btn btn-dark">Verifica disponibilità <span aria-hidden="true">→</span></a>
+      <a href={hotel.phoneHref} class="btn border border-line text-ink hover:bg-ink hover:text-paper">{hotel.phone}</a>
+    </div>
+  </div>
+</section>

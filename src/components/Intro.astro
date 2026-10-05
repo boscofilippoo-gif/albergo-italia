@@ -1,0 +1,29 @@
+<div id="intro" class="fixed inset-0 z-[80] flex items-center justify-center bg-paper text-ink" aria-hidden="true">
+  <div class="flex flex-col items-center gap-6">
+    <svg viewBox="0 0 220 160" class="w-44 md:w-56">
+      <ellipse class="intro-oval" cx="110" cy="80" rx="104" ry="74" fill="none" stroke="currentColor" stroke-width="0.8" pathLength="1" />
+      <text class="intro-mono" x="110" y="97" text-anchor="middle" font-family="Instrument Serif, serif" font-size="58" font-style="italic" fill="currentColor">AI</text>
+    </svg>
+    <p class="intro-line eyebrow text-ink-soft">Corso Roma 6 · Varallo</p>
+  </div>
+</div>
+
+<style>
+  html:not(.js) #intro,
+  html.intro-seen #intro {
+    display: none;
+  }
+  .intro-oval {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  .intro-mono,
+  .intro-line {
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #intro {
+      display: none;
+    }
+  }
+</style>

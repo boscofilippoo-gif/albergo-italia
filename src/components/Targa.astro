@@ -1,0 +1,50 @@
+---
+
+interface Props {
+  /** In home mostra il link alla pagina Storia */
+  link?: boolean;
+}
+const { link = false } = Astro.props;
+
+// Il testo della targa, riga per riga, com'è scritto all'ingresso
+const lines = [
+  'Nei giorni 12 e 13 luglio 1856',
+  'Il Principe Ereditario di Savoia',
+  'ora Umberto I Re d’Italia',
+  'e il fratello Amedeo Duca d’Aosta',
+  'quest’Albergo onorarono',
+  'coll’augusta loro presenza',
+];
+---
+
+<section class="targa-scene relative bg-[#24130f] text-oro-light" aria-labelledby="targa-title">
+  <div class="targa-pin relative flex h-svh flex-col items-center justify-center overflow-clip px-4">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,#4a2419_0%,#24130f_62%)]"></div>
+    <div class="targa-plate relative aspect-[1/1.15] w-[min(84vw,calc((100svh-13rem)/1.15))] [container-type:inline-size] sm:aspect-[1.42] sm:w-[min(84vw,1040px,calc((100svh-12rem)*1.42))]">
+      <div class="targa-fill absolute inset-0 rounded-[50%] bg-[radial-gradient(ellipse_at_50%_45%,#6b2f22_0%,#3a1a13_100%)]" aria-hidden="true"></div>
+      <div class="targa-ring targa-ring-1 absolute inset-0 rounded-[50%] border-[6px] border-[#c9a463]" aria-hidden="true"></div>
+      <div class="targa-ring targa-ring-2 absolute inset-[2.2%] rounded-[50%] border border-[#e6c98f]" aria-hidden="true"></div>
+
+      <h2 id="targa-title" class="sr-only">La targa del 1856</h2>
+      <div
+        class="targa-text absolute inset-[16%_8%] flex flex-col items-center justify-center gap-[0.55em] text-center font-display font-medium uppercase leading-tight tracking-[0.05em] text-[3.3cqi] sm:inset-[14%_10%] sm:tracking-[0.14em] sm:text-[2.9cqi] [text-shadow:0_0_18px_rgb(230_201_143/0.35)]"
+      >
+        {lines.map((l) => <p class="targa-line">{l}</p>)}
+      </div>
+    </div>
+
+    {link && (
+      <div class="targa-caption relative mt-8 md:mt-10">
+        <a href="/storia" class="link-line whitespace-nowrap text-[0.98rem] text-oro-light">La nostra storia →</a>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  /* Gli anelli si disegnano con una maschera conica: --p va da 0% a 100% */
+  .targa-ring {
+    -webkit-mask: conic-gradient(#000 var(--p, 100%), #0000 0);
+    mask: conic-gradient(#000 var(--p, 100%), #0000 0);
+  }
+</style>

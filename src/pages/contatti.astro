@@ -1,0 +1,183 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import heroImg from '../assets/img/vista-balcone.jpg';
+import { hotel, rooms } from '../data/hotel';
+
+// TODO: verificare con la struttura (soprattutto i collegamenti in treno/bus).
+const arrivi = [
+  { t: 'In auto', d: 'Autostrada A26, uscita Romagnano Sesia–Ghemme, poi la strada della Valsesia (SP299) fino a Varallo. L’albergo è sul corso principale, con parcheggio riservato.' },
+  { t: 'In aereo', d: 'Aeroporto di Milano Malpensa a 71 km, circa un’ora d’auto. Torino Caselle è l’alternativa.' },
+  { t: 'Con i mezzi', d: 'In treno fino a Novara, poi autobus di linea per la Valsesia. Chiamateci: vi diciamo noi gli orari aggiornati.' },
+];
+---
+
+<Base title="Contatti e prenotazioni · Albergo Italia, Varallo" description="Prenotate direttamente all’Albergo Italia di Varallo: richiesta di disponibilità, telefono 0163 51106, indirizzo e come arrivare." mobileBar={false}>
+  <PageHero
+    kicker="Contatti"
+    title="Vi aspettiamo"
+    titleItalic="a Varallo."
+    intro="Scriveteci le date: vi rispondiamo noi, con la migliore tariffa disponibile. Oppure chiamateci, risponde l’albergo."
+    image={heroImg}
+    alt="Vista dal balcone dell’albergo su Corso Roma con i tigli gialli"
+    position="50% 60%"
+  />
+
+  <section id="prenota" class="scroll-mt-20 bg-paper-2 py-28 md:py-40">
+    <div class="mx-auto grid max-w-[1600px] gap-16 px-5 md:grid-cols-12 md:px-10">
+      <div class="md:col-span-4">
+        <p class="eyebrow mb-8 flex items-center gap-4 text-rosa" data-reveal><span class="h-px w-10 bg-current"></span> Prenota direttamente</p>
+        <h2 class="display text-[clamp(2.8rem,5vw,5.4rem)]" data-split>Richiesta <em class="text-rosa">di disponibilità.</em></h2>
+        <div class="mt-12 border-t border-line pt-8" data-reveal>
+          <p class="eyebrow text-ink-soft">Telefono</p>
+          <a href={hotel.phoneHref} class="display link-line mt-2 inline-block text-[clamp(2.4rem,3.6vw,3.6rem)]">{hotel.phone}</a>
+        </div>
+        <div class="mt-8 border-t border-line pt-8" data-reveal>
+          <p class="eyebrow text-ink-soft">Orari</p>
+          <p class="mt-3 text-[0.98rem] leading-relaxed">Check-in {hotel.checkIn}<br />Check-out {hotel.checkOut}</p>
+        </div>
+      </div>
+
+      <form id="booking-form" class="md:col-span-7 md:col-start-6" novalidate data-reveal>
+        <fieldset class="grid gap-x-6 gap-y-8 sm:grid-cols-2">
+          <legend class="sr-only">Richiesta di disponibilità</legend>
+          <label class="field"><span>Arrivo</span><input type="date" name="arrivo" required /></label>
+          <label class="field"><span>Partenza</span><input type="date" name="partenza" required /></label>
+          <label class="field">
+            <span>Ospiti</span>
+            <select name="ospiti">
+              <option>1 adulto</option>
+              <option selected>2 adulti</option>
+              <option>3 adulti</option>
+              <option>2 adulti + 1 bambino</option>
+              <option>Altro (specificare nel messaggio)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Camera</span>
+            <select name="camera">
+              <option value="">Indifferente</option>
+              {rooms.map((r) => <option value={r.slug}>{r.name}</option>)}
+            </select>
+          </label>
+          <label class="field"><span>Nome e cognome</span><input type="text" name="nome" autocomplete="name" required /></label>
+          <label class="field"><span>Email</span><input type="email" name="email" autocomplete="email" required /></label>
+          <label class="field sm:col-span-2">
+            <span>Messaggio <em class="not-italic opacity-60">(facoltativo)</em></span>
+            <textarea name="messaggio" rows="3" placeholder="Arriviamo con il cane, vorremmo la camera con il balcone…"></textarea>
+          </label>
+        </fieldset>
+        <div class="mt-10 flex flex-wrap items-center justify-between gap-6">
+          <label class="flex max-w-sm items-start gap-3 text-xs leading-relaxed text-ink-soft">
+            <input type="checkbox" name="privacy" required class="mt-0.5 accent-[var(--color-ink)]" />
+            Ho letto l’informativa privacy e acconsento al trattamento dei dati per rispondere alla richiesta.
+          </label>
+          <button type="submit" class="btn btn-dark">Invia la richiesta <span aria-hidden="true">→</span></button>
+        </div>
+        <p id="form-status" class="mt-6 min-h-6 text-sm text-rosa" role="status"></p>
+      </form>
+    </div>
+  </section>
+
+  <section class="bg-paper py-28 md:py-40">
+    <div class="mx-auto grid max-w-[1600px] gap-12 px-5 md:grid-cols-12 md:px-10">
+      <div class="md:col-span-4">
+        <p class="eyebrow mb-8 flex items-center gap-4 text-rosa" data-reveal><span class="h-px w-10 bg-current"></span> Dove siamo</p>
+        <p class="display text-[clamp(2.4rem,3.6vw,3.8rem)] !leading-[1.05]" data-reveal>{hotel.address}<br />{hotel.cap} {hotel.city} ({hotel.province})</p>
+        <a href={hotel.mapsUrl} target="_blank" rel="noopener" class="btn btn-dark mt-10" data-reveal>Indicazioni stradali ↗</a>
+        <dl class="mt-14 border-t border-line">
+          {
+            arrivi.map((a) => (
+              <div class="border-b border-line py-6" data-reveal>
+                <dt class="display text-2xl">{a.t}</dt>
+                <dd class="mt-2 text-[0.95rem] leading-relaxed text-ink-soft">{a.d}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+      <div class="map relative min-h-[420px] overflow-clip md:col-span-8">
+        <iframe
+          title="Mappa: Albergo Italia, Corso Roma 6, Varallo"
+          src="https://www.google.com/maps?q=Albergo+Italia,+Corso+Roma+6,+13019+Varallo+VC&z=16&output=embed"
+          class="absolute inset-0 h-full w-full border-0"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .field > span {
+    font-size: 0.68rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--color-ink-soft);
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-line);
+    padding: 0.5rem 0 0.8rem;
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    color: var(--color-ink);
+    border-radius: 0;
+    transition: border-color 0.5s var(--ease-out-expo);
+    width: 100%;
+  }
+  .field textarea {
+    resize: vertical;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-bottom-color: var(--color-ink);
+  }
+  .field input:user-invalid {
+    border-bottom-color: var(--color-rosa);
+  }
+  .map iframe {
+    filter: saturate(0.5);
+  }
+</style>
+
+<script>
+  // TODO: collegare a un servizio (Netlify Forms / Web3Forms) o al booking engine della struttura.
+  const form = document.getElementById('booking-form') as HTMLFormElement;
+  const status = document.getElementById('form-status')!;
+  const today = new Date().toISOString().slice(0, 10);
+  const arrivo = form.elements.namedItem('arrivo') as HTMLInputElement;
+  const partenza = form.elements.namedItem('partenza') as HTMLInputElement;
+  const camera = form.elements.namedItem('camera') as HTMLSelectElement;
+  arrivo.min = today;
+  partenza.min = today;
+  arrivo.addEventListener('change', () => {
+    partenza.min = arrivo.value;
+    if (partenza.value && partenza.value <= arrivo.value) partenza.value = '';
+  });
+
+  // Camera preselezionata arrivando da /camere
+  const pre = new URLSearchParams(location.search).get('camera');
+  if (pre && [...camera.options].some((o) => o.value === pre)) camera.value = pre;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    status.textContent = 'Grazie! Abbiamo ricevuto la vostra richiesta: vi risponderemo al più presto.';
+    form.reset();
+  });
+</script>

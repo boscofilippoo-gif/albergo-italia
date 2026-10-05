@@ -1,0 +1,56 @@
+---
+import { Image } from 'astro:assets';
+import sacroMonte from '../assets/img/varallo/sacromonte-20.jpg';
+import rafting from '../assets/img/varallo/rafting.jpg';
+import alagna from '../assets/img/varallo/alagna-walser.jpg';
+
+const items = [
+  { title: 'Sacro Monte', note: 'Patrimonio UNESCO', distance: '9 min', mode: 'a piedi', img: sacroMonte, alt: 'Il Sacro Monte di Varallo, piazza con edifici e cappelle', anchor: 'sacro-monte' },
+  { title: 'Fiume Sesia', note: 'Rafting e kayak', distance: '4 min', mode: 'a piedi', img: rafting, alt: 'Un gommone affronta le rapide del Sesia', anchor: 'sesia' },
+  { title: 'Monte Rosa', note: 'Alagna Valsesia', distance: '35 km', mode: 'in auto', img: alagna, alt: 'Alagna Valsesia d’inverno con il Monte Rosa al tramonto', anchor: 'monte-rosa' },
+];
+---
+
+<section class="relative bg-paper-2 py-32 md:py-44">
+  <div class="mx-auto max-w-[1600px] px-5 md:px-10">
+    <div class="flex flex-wrap items-end justify-between gap-8">
+      <div>
+        <p class="eyebrow mb-8 flex items-center gap-4 text-rosa" data-reveal>
+          <span class="h-px w-10 bg-current"></span> Varallo e la Valsesia
+        </p>
+        <h2 class="display text-[clamp(3rem,7vw,7.4rem)]" data-split>Fuori dalla porta, <em class="text-rosa">la valle.</em></h2>
+      </div>
+      <a href="/varallo" class="btn btn-dark" data-reveal>Scopri Varallo <span aria-hidden="true">→</span></a>
+    </div>
+
+    <ul class="mt-16 grid gap-6 md:mt-24 md:grid-cols-3">
+      {
+        items.map((it, i) => (
+          <li class:list={[{ 'md:mt-20': i === 1 }]} data-reveal>
+            <a href={`/varallo#${it.anchor}`} class="group relative block overflow-clip bg-notte text-paper">
+              <Image
+                src={it.img}
+                alt={it.alt}
+                widths={[600, 960]}
+                sizes="(min-width: 768px) 32vw, 100vw"
+                class="aspect-[3/4] w-full object-cover opacity-90 transition-transform duration-[1.6s] ease-[var(--ease-out-expo)] group-hover:scale-105"
+                loading="lazy"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-notte/85 via-notte/10 to-transparent" />
+              <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6 md:p-8">
+                <div>
+                  <p class="eyebrow text-oro-light">{it.note}</p>
+                  <h3 class="display mt-2 text-[clamp(2.4rem,3.4vw,3.6rem)]">{it.title}</h3>
+                </div>
+                <p class="text-right">
+                  <span class="display block text-4xl text-oro-light">{it.distance}</span>
+                  <span class="eyebrow text-paper/60">{it.mode}</span>
+                </p>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

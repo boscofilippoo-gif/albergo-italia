@@ -1,0 +1,177 @@
+---
+import { hotel, nav } from '../data/hotel';
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => path === href;
+---
+
+<header id="site-header" class="fixed inset-x-0 top-0 z-50" data-theme="dark" data-solid="false">
+  <div class="header-bg absolute inset-0 -z-10"></div>
+  <div class="header-row mx-auto flex max-w-[1600px] items-center justify-between px-5 md:px-10">
+    <a href="/" class="group flex items-center gap-3" aria-label="Albergo Italia, home">
+      <span class="flex flex-col leading-none">
+        <span class="font-display text-[1.45rem] tracking-tight">Albergo Italia</span>
+        <span class="eyebrow mt-1 !text-[0.58rem] opacity-70">Varallo · Valsesia</span>
+      </span>
+    </a>
+
+    <nav class="hidden items-center gap-9 lg:flex" aria-label="Principale">
+      {
+        nav.map((l) => (
+          <a href={l.href} class:list={['nav-link link-line text-[0.82rem] tracking-wide', { 'is-active': isActive(l.href) }]} aria-current={isActive(l.href) ? 'page' : undefined}>
+            {l.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href={hotel.phoneHref} class="link-line hidden text-[0.82rem] tracking-wide md:inline">{hotel.phone}</a>
+      <a href="/contatti#prenota" class="btn header-cta hidden sm:inline-flex">Prenota</a>
+      <button id="menu-open" class="flex h-11 w-11 items-center justify-center lg:hidden" aria-label="Apri il menu" aria-haspopup="dialog">
+        <span class="relative block h-3 w-6">
+          <span class="absolute inset-x-0 top-0 h-px bg-current"></span>
+          <span class="absolute inset-x-0 bottom-0 h-px bg-current"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<dialog id="menu" class="m-0 h-dvh max-h-none w-full max-w-none bg-ink p-0 text-paper backdrop:bg-transparent" aria-label="Menu">
+  <div class="flex h-full flex-col px-6 pb-10 pt-6">
+    <div class="flex items-center justify-between">
+      <a href="/" class="font-display text-2xl">Albergo Italia</a>
+      <button id="menu-close" class="h-11 w-11 text-3xl font-light" aria-label="Chiudi il menu">×</button>
+    </div>
+    <nav class="mt-auto flex flex-col gap-2" aria-label="Menu mobile">
+      <a href="/" class="display text-6xl">Home</a>
+      {nav.map((l) => <a href={l.href} class:list={['display text-6xl', { 'italic text-oro-light': isActive(l.href) }]}>{l.label}</a>)}
+    </nav>
+    <div class="mt-12 flex flex-col gap-3 text-sm opacity-80">
+      <a href={hotel.phoneHref}>{hotel.phone}</a>
+      <span>{hotel.address}, {hotel.city}</span>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  /* L'header prende colore e fondo dalla sezione che ha sotto */
+  #site-header {
+    --hbg: rgb(22 22 22);
+    view-transition-name: site-header;
+    color: var(--color-paper);
+    transition:
+      transform 0.6s var(--ease-out-expo),
+      color 0.5s ease;
+  }
+  #site-header[data-theme='light'] {
+    color: var(--color-ink);
+  }
+  .header-row {
+    height: 5rem;
+    transition: height 0.6s var(--ease-out-expo);
+  }
+  #site-header[data-solid='true'] .header-row {
+    height: 4rem;
+  }
+  .header-bg {
+    background: var(--hbg);
+    opacity: 0;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+    transition:
+      opacity 0.5s ease,
+      background-color 0.5s ease;
+  }
+  #site-header[data-solid='true'] .header-bg {
+    opacity: 1;
+  }
+  #site-header[data-hidden='true'] {
+    transform: translateY(-100%);
+  }
+  .nav-link.is-active {
+    background-size: 100% 1px;
+  }
+  .header-cta {
+    padding: 0.7rem 1.3rem;
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+  #site-header[data-theme='light'] .header-cta {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  #site-header .header-cta:hover {
+    background: var(--color-rosa);
+    color: var(--color-paper);
+  }
+  dialog[open] {
+    animation: menu-in 0.6s var(--ease-out-expo);
+  }
+  @keyframes menu-in {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+</style>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const top = document.getElementById('page-top');
+
+  // Colore di fondo effettivo dell'elemento (risalendo finché non è opaco)
+  const bgOf = (el: Element | null): number[] | null => {
+    while (el && el !== document.documentElement) {
+      const m = getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
+      if (m && (m.length < 4 || Number(m[3]) > 0.5)) return m.slice(0, 3).map(Number);
+      el = el.parentElement;
+    }
+    return null;
+  };
+
+  // Cosa c'è sotto l'header in questo momento
+  const sample = () => {
+    const under = document.elementsFromPoint(window.innerWidth / 2, 40).find((el) => !header.contains(el) && el.id !== 'menu');
+    // Conta il fondo della sezione, non delle card o immagini al suo interno
+    const section = under?.closest('section, footer') ?? under ?? null;
+    const rgb = bgOf(section) ?? [245, 243, 239];
+    const lum = (0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]) / 255;
+    header.dataset.theme = lum < 0.5 ? 'dark' : 'light';
+    header.style.setProperty('--hbg', `rgb(${rgb.join(' ')} / 0.9)`);
+  };
+
+  let last = window.scrollY;
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const y = window.scrollY;
+    const limit = (top?.offsetHeight ?? window.innerHeight) - 80;
+    header.dataset.solid = String(y > limit);
+    // Si nasconde scendendo, ricompare appena si risale (con un minimo di tolleranza)
+    if (Math.abs(y - last) > 6) {
+      header.dataset.hidden = String(y > last && y > limit);
+      last = y;
+    }
+    sample();
+  };
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    },
+    { passive: true },
+  );
+  window.addEventListener('resize', update);
+  update();
+
+  const menu = document.getElementById('menu') as HTMLDialogElement;
+  document.getElementById('menu-open')!.addEventListener('click', () => menu.showModal());
+  document.getElementById('menu-close')!.addEventListener('click', () => menu.close());
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => menu.close()));
+</script>

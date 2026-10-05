@@ -1,0 +1,186 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import heroImg from '../assets/img/varallo/vista-collegiata.jpg';
+import sacroMonte from '../assets/img/varallo/sacromonte-20.jpg';
+import collegiata from '../assets/img/varallo/collegiata.jpg';
+import rafting from '../assets/img/varallo/rafting.jpg';
+import alagna from '../assets/img/varallo/alagna-walser.jpg';
+import orta from '../assets/img/varallo/orta-05.jpg';
+import { places, photoCredits } from '../data/hotel';
+
+const stack = [
+  {
+    id: 'sacro-monte',
+    kicker: 'Patrimonio UNESCO',
+    title: 'Il Sacro Monte',
+    text: 'Il più antico dei Sacri Monti, voluto alla fine del Quattrocento: 45 cappelle affrescate, centinaia di statue a grandezza naturale, giardini sopra i tetti di Varallo. Si sale a piedi o in funivia.',
+    distance: '9 min',
+    mode: 'a piedi',
+    img: sacroMonte,
+    alt: 'La piazza del Sacro Monte di Varallo con la basilica e gli edifici storici',
+  },
+  {
+    id: 'centro',
+    kicker: 'Il borgo',
+    title: 'Il centro storico',
+    text: 'La Collegiata di San Gaudenzio sulla sua rupe, il Palazzo dei Musei con la Pinacoteca, i portici e le botteghe del corso. Si gira tutto a piedi, partendo dal portone.',
+    distance: '5 min',
+    mode: 'a piedi',
+    img: collegiata,
+    alt: 'La Collegiata di San Gaudenzio con il loggiato, sotto il cielo azzurro',
+  },
+  {
+    id: 'sesia',
+    kicker: 'Acqua bianca',
+    title: 'Il fiume Sesia',
+    text: 'Uno dei fiumi più amati d’Europa per rafting, kayak e canyoning. In estate le spiagge di sassi lungo la riva, a pochi minuti dall’albergo.',
+    distance: '4 min',
+    mode: 'a piedi',
+    img: rafting,
+    alt: 'Un gommone da rafting tra le rapide del Sesia',
+  },
+  {
+    id: 'monte-rosa',
+    kicker: 'Alta valle',
+    title: 'Il Monte Rosa',
+    text: 'Risalendo la valle si arriva ad Alagna, tra le case walser e le piste del Monterosa Ski. D’estate sentieri e rifugi d’alta quota.',
+    distance: '35 km',
+    mode: 'in auto',
+    img: alagna,
+    alt: 'Alagna Valsesia d’inverno con il Monte Rosa illuminato dal tramonto',
+  },
+  {
+    id: 'laghi',
+    kicker: 'Una gita',
+    title: 'I laghi',
+    text: 'Il Lago d’Orta con l’Isola di San Giulio è a mezz’ora di strada, il Lago Maggiore con le Isole Borromee poco più in là.',
+    distance: '35 km',
+    mode: 'in auto',
+    img: orta,
+    alt: 'Veduta aerea di Orta San Giulio sul lago',
+  },
+];
+
+const weekend = [
+  {
+    day: 'Sabato',
+    slots: [
+      { t: 'Mattina', d: 'Colazione, poi su al Sacro Monte a piedi. Un paio d’ore tra le cappelle.' },
+      { t: 'Pomeriggio', d: 'Pinacoteca al Palazzo dei Musei, poi giù al Sesia per una discesa in rafting.' },
+      { t: 'Sera', d: 'Aperitivo al bar e cena sotto le volte. Dalla finestra, il Sacro Monte illuminato.' },
+    ],
+  },
+  {
+    day: 'Domenica',
+    slots: [
+      { t: 'Mattina', d: 'In auto verso l’alta valle: Alagna, le case walser, il Monte Rosa.' },
+      { t: 'Pomeriggio', d: 'Rientro con sosta al Lago d’Orta, un giro in barca all’Isola di San Giulio.' },
+      { t: 'Sera', d: 'Si riparte, con l’idea di tornare in un’altra stagione.' },
+    ],
+  },
+];
+---
+
+<Base title="Varallo e la Valsesia · Albergo Italia" description="Cosa vedere a Varallo e in Valsesia partendo dall’Albergo Italia: il Sacro Monte UNESCO a 9 minuti a piedi, il centro storico, il Sesia, il Monte Rosa e i laghi.">
+  <PageHero
+    kicker="Varallo e la Valsesia"
+    title="Fuori dalla porta,"
+    titleItalic="la valle."
+    intro="Il Sacro Monte sopra i tetti, il fiume sotto il ponte, il Monte Rosa in fondo alla valle. Dall’albergo si parte a piedi."
+    image={heroImg}
+    alt="Veduta dall’alto del centro di Varallo con la Collegiata di San Gaudenzio"
+    position="50% 45%"
+  />
+
+  <!-- Luoghi a carte sovrapposte -->
+  <section class="stack relative bg-notte" aria-label="Cosa vedere">
+    {
+      stack.map((s, i) => (
+        <article id={s.id} class="stack-card sticky top-0 h-svh overflow-clip bg-notte text-paper" style={`z-index:${i + 1}`}>
+          <div class="stack-inner relative h-full w-full origin-top">
+            <Image src={s.img} alt={s.alt} widths={[900, 1400, 1920]} sizes="100vw" class="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+            <div class="absolute inset-0 bg-gradient-to-t from-notte via-notte/30 to-notte/20" />
+            <div class="absolute inset-0 bg-gradient-to-r from-notte/70 to-transparent" />
+            <div class="relative mx-auto flex h-full max-w-[1600px] flex-col justify-end px-5 pb-12 md:px-10 md:pb-16">
+              <div class="flex flex-wrap items-end justify-between gap-8">
+                <div class="max-w-2xl">
+                  <p class="eyebrow flex items-center gap-4 text-oro-light">
+                    <span>0{i + 1} / 0{stack.length}</span>
+                    <span class="h-px w-10 bg-current" /> {s.kicker}
+                  </p>
+                  <h2 class="display mt-5 text-[clamp(3.4rem,9vw,9rem)]">{s.title}</h2>
+                  <p class="mt-6 max-w-lg text-[1.02rem] leading-relaxed text-paper/80">{s.text}</p>
+                </div>
+                <p class="text-right">
+                  <span class="display block text-[clamp(3rem,6vw,6rem)] !leading-none text-oro-light">{s.distance}</span>
+                  <span class="eyebrow text-paper/60">{s.mode} dall’albergo</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </article>
+      ))
+    }
+  </section>
+
+  <!-- Un weekend -->
+  <section class="bg-paper py-28 md:py-44">
+    <div class="mx-auto max-w-[1600px] px-5 md:px-10">
+      <p class="eyebrow mb-8 flex items-center gap-4 text-rosa" data-reveal><span class="h-px w-10 bg-current"></span> Un’idea per voi</p>
+      <h2 class="display text-[clamp(3rem,7vw,7.4rem)]" data-split>Un weekend <em class="text-rosa">a Varallo.</em></h2>
+      <div class="mt-16 grid gap-16 md:mt-24 md:grid-cols-2 md:gap-10">
+        {
+          weekend.map((d) => (
+            <div data-reveal>
+              <h3 class="display border-b border-line pb-6 text-5xl italic text-rosa">{d.day}</h3>
+              <ol>
+                {d.slots.map((s) => (
+                  <li class="grid gap-2 border-b border-line py-7 sm:grid-cols-[9rem_1fr]">
+                    <span class="eyebrow pt-1 text-ink-soft">{s.t}</span>
+                    <span class="text-[1rem] leading-relaxed">{s.d}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Distanze -->
+  <section class="bg-notte py-28 text-paper md:py-40">
+    <div class="mx-auto max-w-[1600px] px-5 md:px-10">
+      <p class="eyebrow mb-8 flex items-center gap-4 text-oro-light" data-reveal><span class="h-px w-10 bg-current"></span> Le distanze</p>
+      <h2 class="display text-[clamp(3rem,6vw,6.4rem)]" data-split>Tutto <em class="text-oro-light">a portata.</em></h2>
+      <ol class="mt-16 border-t border-paper/15">
+        {
+          places.map((p, i) => (
+            <li class="place group relative grid grid-cols-[1fr_auto] items-baseline gap-x-6 gap-y-1 border-b border-paper/15 py-7 md:grid-cols-[4rem_1.2fr_1fr_auto] md:py-9" data-reveal>
+              <span class="absolute inset-0 origin-bottom scale-y-0 bg-paper/[0.04] transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-y-100" />
+              <span class="eyebrow relative hidden text-paper/40 md:block">0{i + 1}</span>
+              <h3 class="display relative text-[clamp(2rem,3.6vw,3.6rem)] transition-transform duration-700 ease-[var(--ease-out-expo)] md:group-hover:translate-x-4">{p.name}</h3>
+              <p class="relative order-3 col-span-2 text-sm text-paper/60 md:order-none md:col-span-1">{p.note}</p>
+              <p class="relative text-right">
+                <span class="display text-[clamp(1.8rem,3vw,3rem)] text-oro-light">{p.distance}</span>
+                <span class="eyebrow ml-2 block text-paper/50 md:inline">{p.mode}</span>
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+
+      <details class="mt-16 text-xs text-paper/45">
+        <summary class="cursor-pointer">Crediti fotografici</summary>
+        <ul class="mt-4 grid gap-1">
+          {photoCredits.map((c) => <li>{c.file} — {c.author}, {c.license}, via Wikimedia Commons</li>)}
+        </ul>
+      </details>
+    </div>
+  </section>
+
+  <CtaBand title="La valle" titleItalic="vi aspetta." />
+</Base>

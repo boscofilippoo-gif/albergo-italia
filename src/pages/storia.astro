@@ -1,0 +1,140 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Targa from '../components/Targa.astro';
+import CtaBand from '../components/CtaBand.astro';
+import heroImg from '../assets/img/facciata-nuvole.jpg';
+import corridoio from '../assets/img/corridoio.jpg';
+import ingresso from '../assets/img/ingresso-neve.jpg';
+import reception from '../assets/img/reception.jpg';
+import salotto from '../assets/img/salotto-affrescato.jpg';
+import scala from '../assets/img/scala-bandiera.jpg';
+import legno from '../assets/img/scultura-legno.jpg';
+import marmo from '../assets/img/scultura-marmo.jpg';
+import giardino from '../assets/img/giardino.jpg';
+
+const chapters = [
+  {
+    title: 'Il convento',
+    text: 'Prima di essere un albergo, questo edificio era un convento. Lo si capisce camminando: le volte dei corridoi, i muri spessi che d’estate tengono fresco, le proporzioni di un luogo pensato per il silenzio.',
+    img: corridoio,
+    alt: 'Corridoio con soffitto a volte, porte in legno e quadri',
+  },
+  {
+    title: 'L’albergo',
+    text: 'Nell’Ottocento il convento apre le porte ai viaggiatori, sulla via principale di Varallo. Arrivano per il Sacro Monte, per la valle, per i commerci: sotto l’insegna trovano un letto e una tavola.',
+    img: ingresso,
+    alt: 'Il portone sotto le insegne Albergo e Ristorante, d’inverno con la neve',
+  },
+];
+
+const spazi = [
+  { img: salotto, alt: 'Sala con soffitto affrescato e divano a righe', t: 'La sala affrescata', d: 'Soffitti dipinti e pavimento in legno.' },
+  { img: corridoio, alt: 'Corridoio con soffitto a volte', t: 'Le volte', d: 'I corridoi del vecchio convento.' },
+  { img: scala, alt: 'Pianerottolo con il tricolore e un dipinto antico', t: 'Il tricolore', d: 'Sul pianerottolo, tra quadri e tappeti.' },
+  { img: legno, alt: 'Scultura in legno su un piedistallo blu', t: 'Il legno', d: 'Opere d’arte lungo le scale.' },
+  { img: marmo, alt: 'Scultura in marmo bianco sul pianerottolo', t: 'Il marmo', d: 'Una scultura bianca accanto al corrimano.' },
+  { img: giardino, alt: 'Il giardino con le ortensie e i gazebo', t: 'Il giardino', d: 'Ortensie, prato e gazebo per le feste.' },
+];
+---
+
+<Base title="La storia · Albergo Italia, Varallo" description="Un ex convento diventato albergo nell’Ottocento, sulla via principale di Varallo. Nel 1856 ospitò Umberto di Savoia, futuro re d’Italia.">
+  <PageHero
+    kicker="La storia"
+    title="Quasi due secoli"
+    titleItalic="di ospiti."
+    intro="Un convento, poi un albergo sulla via principale di Varallo. Nel mezzo, due principi di casa Savoia e generazioni di viaggiatori."
+    image={heroImg}
+    alt="La facciata dell’Albergo Italia vista dalla piazza"
+    position="50% 40%"
+  />
+
+  <!-- Capitoli -->
+  <section class="overflow-clip bg-paper py-28 md:py-44">
+    <div class="mx-auto flex max-w-[1600px] flex-col gap-32 px-5 md:gap-48 md:px-10">
+      {
+        chapters.map((c, i) => (
+          <article class="chapter relative grid items-end gap-10 md:grid-cols-12">
+            <figure class:list={['relative md:col-span-5', i % 2 ? 'md:col-start-8' : 'md:col-start-1']}>
+              <div class="overflow-clip" data-clip-reveal>
+                <Image src={c.img} alt={c.alt} widths={[600, 900]} sizes="(min-width: 768px) 40vw, 100vw" class="aspect-[2/3] w-full object-cover" loading="lazy" />
+              </div>
+            </figure>
+            <div class:list={['relative pb-6 md:col-span-5', i % 2 ? 'md:col-start-2 md:row-start-1' : 'md:col-start-7']}>
+              <p class="eyebrow text-rosa" data-reveal>0{i + 1}</p>
+              <h2 class="display mt-4 text-[clamp(3.4rem,7vw,7.6rem)]" data-split>{c.title}</h2>
+              <p class="mt-8 max-w-md text-[1.05rem] leading-relaxed text-ink-soft" data-reveal>{c.text}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <Targa />
+
+  <!-- Capitolo IV: oggi -->
+  <section class="bg-paper py-28 md:py-44">
+    <div class="mx-auto grid max-w-[1600px] items-center gap-12 px-5 md:grid-cols-12 md:px-10">
+      <div class="md:col-span-5">
+        <p class="eyebrow text-rosa" data-reveal>04</p>
+        <h2 class="display mt-4 text-[clamp(3.4rem,7vw,7.6rem)]" data-split>Oggi</h2>
+        <p class="mt-8 max-w-md text-[1.05rem] leading-relaxed text-ink-soft" data-reveal>
+          Un tre stelle ristrutturato con rispetto: le camere sono state rinnovate, il carattere è rimasto. La stessa porta su Corso
+          Roma, lo stesso banco della reception, e tanti ospiti che tornano.
+        </p>
+        <a href="/camere" class="btn btn-dark mt-10" data-reveal>Le camere <span aria-hidden="true">→</span></a>
+      </div>
+      <figure class="md:col-span-6 md:col-start-7">
+        <div class="overflow-clip" data-clip-reveal>
+          <Image src={reception} alt="La reception con il bancone in legno e l’arco d’ingresso" widths={[600]} sizes="(min-width: 768px) 45vw, 100vw" class="aspect-[4/5] w-full object-cover" loading="lazy" data-inner-zoom />
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Gli spazi: galleria orizzontale -->
+  <section class="bg-ink text-paper" data-hscroll aria-labelledby="spazi-title">
+    <div class="hscroll-pin relative overflow-clip md:h-svh">
+      <div class="hscroll-track flex flex-col gap-12 px-5 py-28 md:h-full md:w-max md:flex-row md:items-center md:gap-10 md:px-10 md:py-0">
+        <div class="shrink-0 md:w-[30vw]">
+          <p class="eyebrow mb-8 flex items-center gap-4 text-oro-light"><span class="h-px w-10 bg-current"></span> Gli spazi</p>
+          <h2 id="spazi-title" class="display text-[clamp(3rem,6vw,6.4rem)]">Dettagli <em class="text-oro-light">di casa.</em></h2>
+          <p class="mt-8 max-w-xs text-[1rem] leading-relaxed text-paper/70">Affreschi, volte, opere d’arte sui pianerottoli, un giardino dietro le mura.</p>
+        </div>
+        {
+          spazi.map((s, i) => (
+            <figure class:list={['shrink-0 md:w-[26vw] md:min-w-[320px]', { 'md:mt-[18vh]': i % 2 === 0, 'md:-mt-[14vh]': i % 2 === 1 }]}>
+              <div class="overflow-clip">
+                <Image src={s.img} alt={s.alt} widths={[500, 800]} sizes="(min-width: 768px) 26vw, 100vw" class="aspect-[3/4] w-full object-cover" loading="lazy" />
+              </div>
+              <figcaption class="mt-5 flex items-baseline justify-between gap-4 border-t border-paper/15 pt-4">
+                <span class="display text-3xl">{s.t}</span>
+                <span class="text-right text-xs text-paper/55">{s.d}</span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- La tavola -->
+  <section class="bg-paper-2 py-28 md:py-40">
+    <div class="mx-auto grid max-w-[1600px] gap-10 px-5 md:grid-cols-12 md:px-10">
+      <p class="eyebrow text-rosa md:col-span-3" data-reveal>La tavola</p>
+      <div class="md:col-span-8">
+        <p class="display text-[clamp(2.4rem,4.6vw,4.8rem)] !leading-[1.05]" data-split>
+          Sotto le volte, il ristorante dell’albergo cucina <em class="text-rosa">la valle.</em>
+        </p>
+        <p class="mt-8 max-w-xl text-[1.02rem] leading-relaxed text-ink-soft" data-reveal>
+          Riso Carnaroli DOP della Baraggia, latticini delle aziende agricole valsesiane, vini dell’Alto Piemonte. Comodo, la sera,
+          dopo una giornata in valle: si scende le scale e si è a tavola.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="Il prossimo capitolo" titleItalic="è il vostro." />
+</Base>

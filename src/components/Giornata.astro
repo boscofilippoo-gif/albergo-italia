@@ -1,0 +1,141 @@
+---
+import { Image } from 'astro:assets';
+import vista from '../assets/img/vista-balcone.jpg';
+import cappelle from '../assets/img/varallo/sacromonte-cappelle1.jpg';
+import reception from '../assets/img/reception.jpg';
+import notte from '../assets/img/notte-sacro-monte.jpg';
+
+const moments = [
+  {
+    time: '07:30',
+    title: 'La colazione',
+    text: 'Continentale o all’italiana: torte fatte in casa, ma anche uova, frutta fresca e caffè come si deve. Inclusa nel prezzo.',
+    tags: ['Colazione inclusa'],
+    img: vista,
+    alt: 'Vista dal balcone su Corso Roma al mattino, con i tigli gialli',
+  },
+  {
+    time: '10:00',
+    title: 'Verso il Sacro Monte',
+    text: 'Dal portone sono nove minuti a piedi. Si sale lungo il sentiero o con la funivia, e si torna per pranzo.',
+    tags: ['In centro', 'Tutto a piedi'],
+    img: cappelle,
+    alt: 'Una cappella del Sacro Monte di Varallo tra i giardini',
+  },
+  {
+    time: '14:00',
+    title: 'Il check-in',
+    text: 'Dalle 14:00 alle 21:30. L’auto resta nel parcheggio riservato, il cane è il benvenuto, la culla per i bambini è già pronta.',
+    tags: ['Parcheggio riservato', 'Animali ammessi', 'Culla gratuita'],
+    img: reception,
+    alt: 'La reception con il bancone in legno e le chiavi',
+  },
+  {
+    time: '18:30',
+    title: 'Un bicchiere al bar',
+    text: 'Il bar con la boiserie, un vino dell’Alto Piemonte, il passeggio sul corso sotto la finestra.',
+    tags: ['Bar'],
+  },
+  {
+    time: '20:00',
+    title: 'Cena sotto le volte',
+    text: 'Il ristorante dell’albergo cucina la valle: riso Carnaroli della Baraggia, latticini valsesiani, piatti della tradizione.',
+    tags: ['Ristorante'],
+  },
+  {
+    time: '22:00',
+    title: 'Buonanotte',
+    text: 'Il Sacro Monte si accende sopra i tetti. Wi-Fi gratuito in camera, e domani si ricomincia.',
+    tags: ['Wi-Fi gratuito'],
+    img: notte,
+    alt: 'Varallo di notte con il Sacro Monte illuminato',
+  },
+];
+---
+
+<section class="giornata relative bg-notte text-paper" aria-labelledby="giornata-title">
+  <div class="mx-auto max-w-[1600px] px-5 pt-28 md:px-10 md:pt-40">
+    <p class="eyebrow mb-8 flex items-center gap-4 text-oro-light" data-reveal>
+      <span class="h-px w-10 bg-current"></span> I servizi
+    </p>
+    <h2 id="giornata-title" class="display max-w-[14ch] text-[clamp(3rem,8vw,8.4rem)]" data-split>
+      Una giornata <em class="text-oro-light">all’Albergo Italia.</em>
+    </h2>
+  </div>
+
+  <div class="mx-auto grid max-w-[1600px] gap-10 px-5 pb-28 pt-16 md:grid-cols-12 md:px-10 md:pb-40 md:pt-24">
+    <!-- Orologio che segue lo scroll -->
+    <div class="sticky top-0 z-10 -mx-5 bg-notte/90 px-5 py-4 backdrop-blur md:static md:mx-0 md:bg-transparent md:p-0 md:backdrop-blur-none md:col-span-5">
+      <div class="md:sticky md:top-28">
+        <p class="giornata-clock display text-[clamp(3.4rem,13vw,13rem)] !leading-none text-oro-light tabular-nums" aria-hidden="true">07:30</p>
+        <p class="giornata-now eyebrow mt-4 hidden items-center gap-3 text-paper/70 md:flex">
+          <span class="h-2 w-2 rounded-full bg-oro-light"></span>
+          <span>A Varallo ora sono le <span data-now>--:--</span></span>
+        </p>
+      </div>
+    </div>
+
+    <ol class="flex flex-col md:col-span-6 md:col-start-7">
+      {
+        moments.map((m) => (
+          <li class="moment border-t border-paper/15 py-12 md:py-16" data-time={m.time}>
+            <p class="flex items-center gap-4">
+              <span class="eyebrow text-oro-light">{m.time}</span>
+              <span class="moment-badge eyebrow hidden rounded-full bg-oro-light px-3 py-1 !text-[0.6rem] text-ink">Adesso</span>
+            </p>
+            <h3 class="display mt-4 text-[clamp(2.4rem,4vw,4.2rem)]">{m.title}</h3>
+            <p class="mt-4 max-w-md text-[1rem] leading-relaxed text-paper/75">{m.text}</p>
+            <ul class="mt-6 flex flex-wrap gap-2">
+              {m.tags.map((t) => (
+                <li class="rounded-full border border-paper/20 px-4 py-1.5 text-xs text-paper/80">{t}</li>
+              ))}
+            </ul>
+            {m.img && (
+              <div class="mt-10 overflow-clip" data-clip-reveal>
+                <Image src={m.img} alt={m.alt} widths={[600, 1000]} sizes="(min-width: 768px) 45vw, 100vw" class="aspect-[16/10] w-full object-cover" loading="lazy" />
+              </div>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<script>
+  const clock = document.querySelector<HTMLElement>('.giornata-clock');
+  const items = [...document.querySelectorAll<HTMLElement>('.moment')];
+  if (clock && items.length) {
+    // L'orologio mostra l'ora del momento che si sta leggendo
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) clock.textContent = (e.target as HTMLElement).dataset.time!;
+        });
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    items.forEach((el) => io.observe(el));
+
+    // "Adesso": evidenzia il momento della giornata in corso a Varallo
+    const fmt = new Intl.DateTimeFormat('it-IT', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Rome' });
+    const now = fmt.format(new Date());
+    const nowEl = document.querySelector('[data-now]');
+    if (nowEl) nowEl.textContent = now;
+    const toMin = (t: string) => {
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    };
+    const n = toMin(now);
+    let current = items[items.length - 1];
+    for (const el of items) if (toMin(el.dataset.time!) <= n) current = el;
+    current.querySelector('.moment-badge')?.classList.remove('hidden');
+    current.classList.add('is-now');
+  }
+</script>
+
+<style>
+  .moment.is-now h3 {
+    color: var(--color-oro-light);
+  }
+</style>
